@@ -141,7 +141,7 @@ export default function App() {
               <td>{o.id}</td>
               <td>{o.item}</td>
               <td>{o.status}</td>
-              <td>{o.countDown ?? "-"}</td>
+              <td>{o.countDown}</td>
             </tr>
           ))}
         </tbody>
@@ -199,9 +199,7 @@ export default function App() {
                 <td>{o.item}</td>
                 <td>{o.status}</td>
                 <td>
-                  {o.botId
-                    ? `Bot ${bots.find((b) => b.id === o.botId)?.name ?? "-"}`
-                    : "-"}
+                  {bots.find((b) => b.id === o.botId)?.name}
                 </td>
               </tr>
             ))}
