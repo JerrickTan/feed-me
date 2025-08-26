@@ -12,7 +12,7 @@ type Bot = {
 };
 
 type Order = {
-  id: number;
+  id: string;
   item: string;
   status: (typeof STATUS)[keyof typeof STATUS];
   isVip: boolean;
@@ -34,6 +34,7 @@ export default function App() {
     ]);
   };
 
+  // Remove the last bot and reassign its in-progress order (if any) back to pending
   const removeBot = () => {
     if (bots.length === 0) return;
 
@@ -59,7 +60,7 @@ export default function App() {
     setOrders([
       ...orders,
       {
-        id: Date.now(),
+        id: Math.random().toString(36).slice(2),
         item: "Food " + (orders.length + 1),
         status: STATUS.PENDING,
         isVip,
@@ -67,6 +68,7 @@ export default function App() {
     ]);
   };
 
+  // Assign orders to available bots, prioritizing VIP orders
   useEffect(() => {
     if (bots.length === 0) return;
 
@@ -76,7 +78,10 @@ export default function App() {
 
     if (!nextOrder) return;
 
-    const availableBot = bots.find((b) => !orders.some((o) => o.status === STATUS.IN_PROGRESS && o.botId === b.id));
+    const availableBot = bots.find(
+      (b) =>
+        !orders.some((o) => o.status === STATUS.IN_PROGRESS && o.botId === b.id)
+    );
     if (!availableBot) return;
 
     setOrders((prev) =>
@@ -93,6 +98,7 @@ export default function App() {
     );
   }, [orders, bots]);
 
+  // Countdown for in-progress orders
   useEffect(() => {
     const interval = setInterval(() => {
       setOrders((prev) =>
@@ -115,7 +121,7 @@ export default function App() {
 
     return () => clearInterval(interval);
   }, []);
-    
+
   return (
     <div>
       <h2>Customer</h2>
@@ -198,9 +204,7 @@ export default function App() {
                 <td>{o.id}</td>
                 <td>{o.item}</td>
                 <td>{o.status}</td>
-                <td>
-                  {bots.find((b) => b.id === o.botId)?.name}
-                </td>
+                <td>{bots.find((b) => b.id === o.botId)?.name}</td>
               </tr>
             ))}
         </tbody>
